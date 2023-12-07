@@ -17,10 +17,10 @@ namespace WebApplication1.Controllers
     public class AuthController : ControllerBase
     {
         private string secretKey = "this is my custom Secret key for authnetication";
-        private readonly AppDbContext _dbContext;
-        public AuthController(AppDbContext context)
+        private readonly IUserRepository _userRepository;
+        public AuthController(IUserRepository userRepository)
         {
-            _dbContext = context;
+            _userRepository = userRepository;
         }
 
         [HttpPost("register")]
@@ -28,7 +28,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                if (await _dbContext.User.AnyAsync(u => u.Email == request.Email))
+                if (await _userRepository.FindByEmailAsync(request.Email))
                 {
                     return BadRequest("Username is already taken");
                 }
@@ -39,8 +39,8 @@ namespace WebApplication1.Controllers
                     Password = request.Password,
                 };
 
-                _dbContext.User.Add(newUser);
-                await _dbContext.SaveChangesAsync();
+               _userRepository.Create(newUser);
+                await _userRepository.SaveChangesAsync();
 
                 return Ok("Registration successful");
             }
@@ -55,7 +55,7 @@ namespace WebApplication1.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserDto request)
         {
-            var user = await _dbContext.User.FirstOrDefaultAsync(u => u.Email == request.Email && u.Password == request.Password);
+            var user = await _userRepository.FirstOrDefaultAsync(request.Email , request.Password);
 
             if (user == null)
             {

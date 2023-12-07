@@ -17,6 +17,7 @@ const ProtectedRoute = ({ children, ...rest }) => {
             },
           }
         );
+        console.log(response);
         return response.status === 200;
       } catch (error) {
         console.error("Token validation failed", error);

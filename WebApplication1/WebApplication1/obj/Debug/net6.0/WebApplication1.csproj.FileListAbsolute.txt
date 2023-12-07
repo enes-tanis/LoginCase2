@@ -63,3 +63,4 @@ C:\Users\abdul\Masaüstü\git\LoginCase2\WebApplication1\WebApplication1\obj\Deb
 C:\Users\abdul\Masaüstü\git\LoginCase2\WebApplication1\WebApplication1\obj\Debug\net6.0\WebApplication1.pdb
 C:\Users\abdul\Masaüstü\git\LoginCase2\WebApplication1\WebApplication1\obj\Debug\net6.0\WebApplication1.genruntimeconfig.cache
 C:\Users\abdul\Masaüstü\git\LoginCase2\WebApplication1\WebApplication1\obj\Debug\net6.0\ref\WebApplication1.dll
+C:\Users\abdul\Masaüstü\git\LoginCase2\WebApplication1\WebApplication1\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
