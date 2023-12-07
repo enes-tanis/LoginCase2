@@ -18,14 +18,14 @@ namespace WebApplication1.Data
             return user;
         }
 
-        public async Task<bool> FindByEmailAsync(string email)
+        public async Task<bool> FindEmailAsync(string email)
         {
             return await _dbContext.User.AnyAsync(u => u.Email == email);
         }
 
-        public async Task<User?> FirstOrDefaultAsync(string email, string password)
+        public async Task<User?> FindUserByEmailAsync(string email)
         {
-           return await _dbContext.User.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+            return await _dbContext.User.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<int> SaveChangesAsync()

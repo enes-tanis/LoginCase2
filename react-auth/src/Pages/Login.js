@@ -31,14 +31,9 @@ const Login = ({ setToken }) => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
   return (
     <main className="form-signin d-flex align-items-center justify-content-center vh-100">
-      <form className="w-50 mx-auto">
+      <form className="w-50 mx-auto" style={{ maxWidth: "600px" }}>
         {error && <p className="text-danger">!! Hatalı Giriş</p>}
         <div className="form-floating mb-3">
           <input
@@ -65,13 +60,6 @@ const Login = ({ setToken }) => {
           onClick={handleLogin}
         >
           Giriş
-        </button>
-
-        <button
-          className="btn btn-danger w-100 py-2 mt-2"
-          onClick={handleLogout}
-        >
-          Çıkış Yap
         </button>
       </form>
     </main>

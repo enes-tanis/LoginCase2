@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -28,7 +28,7 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                if (await _userRepository.FindByEmailAsync(request.Email))
+                if (await _userRepository.FindEmailAsync(request.Email))
                 {
                     return BadRequest("Username is already taken");
                 }
@@ -36,7 +36,7 @@ namespace WebApplication1.Controllers
                 var newUser = new User
                 {
                     Email = request.Email,
-                    Password = request.Password,
+                    Password = BCrypt.Net.BCrypt.HashPassword(request.Password)
                 };
 
                _userRepository.Create(newUser);
@@ -55,9 +55,9 @@ namespace WebApplication1.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserDto request)
         {
-            var user = await _userRepository.FirstOrDefaultAsync(request.Email , request.Password);
+            var user = await _userRepository.FindUserByEmailAsync(request.Email);
 
-            if (user == null)
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
                 return Unauthorized("Invalid username or password");
             }
@@ -67,7 +67,7 @@ namespace WebApplication1.Controllers
             return Ok(new { Token = token });
         }
 
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("authentication")]
         public IActionResult Authentication()
         {
@@ -78,7 +78,7 @@ namespace WebApplication1.Controllers
         private string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secretKey);
+            var key = Encoding.UTF8.GetBytes(secretKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
